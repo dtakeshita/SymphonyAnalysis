@@ -69,7 +69,19 @@ classdef CellData < handle
                     curEpoch.attributes('epochStartTime') = epochTimes_sorted(i);
                     curEpoch.attributes('epochNum') = i;
                     curEpoch.addDataLinks(EpochDataGroups(groupInd).Groups(2).Groups);
+                    %% DT-add background 
+                    if strcmp(curEpoch.attributes('displayName'),'LED Factor Pulse')...
+                            && ~any(strcmp(keys(curEpoch.attributes),'LEDbackground'))
+                        background = sprintf('%s/%s', EpochDataGroups(groupInd).Name, 'background');
+                        background = h5read(fname, background);
+                        background = background.measurement.quantity(2:4);
+                        curEpoch.attributes('LEDbackground') = background';
+                    end
+                    %% End of add background
                     obj.epochs(i) = curEpoch;
+                    %% DT--For older symphony data, add voltage for LEDFactorPulse
+                    addLEDVoltages( obj.epochs );
+                    %% End of add Voltages
                 end
             end
         end
