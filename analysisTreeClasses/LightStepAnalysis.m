@@ -21,7 +21,8 @@ classdef LightStepAnalysis < AnalysisTree
             obj = obj.copyAnalysisParams(params);
             obj = obj.copyParamsFromSampleEpoch(cellData, dataSet, ...
                 {'RstarMean', 'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY'});
-            obj = obj.buildCellTree(1, cellData, dataSet, {'RstarMean'});
+            %obj = obj.buildCellTree(1, cellData, dataSet, {'RstarMean'});
+            obj = obj.buildCellTree(1, cellData, dataSet, {'pulseAmplitude'});
         end
         
         function obj = doAnalysis(obj, cellData)

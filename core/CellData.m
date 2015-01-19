@@ -79,10 +79,10 @@ classdef CellData < handle
                     end
                     %% End of add background
                     obj.epochs(i) = curEpoch;
-                    %% DT--For older symphony data, add voltage for LEDFactorPulse
-                    addLEDVoltages( obj.epochs );
-                    %% End of add Voltages
                 end
+                %% DT--For older symphony data, add voltage for LEDFactorPulse
+                addLEDVoltages( obj.epochs );
+                %% End of add Voltages
             end
         end
         
