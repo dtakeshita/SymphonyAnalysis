@@ -127,22 +127,22 @@ classdef SpotsMultiSizeAnalysis < AnalysisTree
         %                 ylabel('Charge (pC)');
         %             end
         %         end
-        
-        function plotMeanTrace(node, cellData)
-            rootData = node.get(1);
-            epochInd = node.get(2).epochID;
-            if strcmp(rootData.(rootData.ampModeParam), 'Cell attached')
-                cellData.plotPSTH(epochInd, 10, rootData.deviceName);
-                %                 hold on
-                %                 firingStart = node.get(2).meanONlatency;
-                %                 firingEnd = firingStart + node.get(2).meanONenhancedDuration;
-                %                 plot([firingStart firingEnd], [0 0]);
-                %                 hold off
-            else
-                cellData.plotMeanData(epochInd, true, [], rootData.deviceName);
-            end
-            title(['ON latency: ',num2str(node.get(2).meanONlatency),' ste: ',num2str(node.get(2).steONlatency)]);
-        end
+%         
+%         function plotMeanTrace(node, cellData)
+%             rootData = node.get(1);
+%             epochInd = node.get(2).epochID;
+%             if strcmp(rootData.(rootData.ampModeParam), 'Cell attached')
+%                 cellData.plotPSTH(epochInd, 10, rootData.deviceName);
+%                 %                 hold on
+%                 %                 firingStart = node.get(2).meanONlatency;
+%                 %                 firingEnd = firingStart + node.get(2).meanONenhancedDuration;
+%                 %                 plot([firingStart firingEnd], [0 0]);
+%                 %                 hold off
+%             else
+%                 cellData.plotMeanData(epochInd, true, [], rootData.deviceName);
+%             end
+%             %title(['ON latency: ',num2str(node.get(2).meanONlatency),' ste: ',num2str(node.get(2).steONlatency)]);
+%         end
         
         function plot_spotSizeVsONSETspikes(node, cellData)
             rootData = node.get(1);
@@ -173,6 +173,20 @@ classdef SpotsMultiSizeAnalysis < AnalysisTree
             xlabel('spotSize');
             ylabel(['OFFSETspikes (' yField.units ')']);
         end
+        function plot_spotSizeVsONSET_peak(node, cellData)
+            rootData = node.get(1);
+            xvals = rootData.spotSize;
+            yField = rootData.ONSET_peak;
+            if strcmp(yField.units, 's')
+            yvals = yField.median_c;
+            else
+            yvals = yField.mean_c;
+            end
+            errs = yField.SEM;
+            errorbar(xvals, yvals, errs);
+            xlabel('spotSize');
+            ylabel(['ONSET_peak (' yField.units ')']);
+        end
         
         function plotEpochData(node, cellData, device, epochIndex)
             nodeData = node.get(1);
@@ -193,7 +207,7 @@ classdef SpotsMultiSizeAnalysis < AnalysisTree
             
             ONendTime = cellData.epochs(nodeData.epochID(epochIndex)).get('stimTime')*1E-3; %s
             ONstartTime = 0;
-            if isfield(nodeData, 'ONSETlatency')
+            if isfield(nodeData, 'ONSETlatency') && ~isnan(nodeData.ONSETlatency.value(1))
                 %draw lines here
                 hold on
                 firingStart = node.get(1).ONSETlatency.value(epochIndex)+ONstartTime;
@@ -206,7 +220,7 @@ classdef SpotsMultiSizeAnalysis < AnalysisTree
                 plot([burstBound burstBound], [upperLim lowerLim], 'LineStyle','--');
                 hold off
             end;
-            if isfield(nodeData, 'OFFSETlatency')
+            if isfield(nodeData, 'OFFSETlatency') && ~isnan(nodeData.OFFSETlatency.value(1))
                 %draw lines here
                 hold on
                 firingStart = node.get(1).OFFSETlatency.value(epochIndex)+ONendTime;
