@@ -46,7 +46,21 @@ classdef LightStepAnalysis < AnalysisTree
                 
                 obj = obj.set(leafIDs(i), curNode);
             end
-            
+            %% DT - copied from SpotsMultiSizeAnalysis
+            obj = obj.percolateUp(leafIDs, ...
+                'splitValue', 'pulseAmplitude');
+            [byEpochParamList, singleValParamList, collectedParamList] = getParameterListsByType(curNode);
+            %fnames = fnames{1};
+            obj = obj.percolateUp(leafIDs, byEpochParamList, byEpochParamList);
+            obj = obj.percolateUp(leafIDs, singleValParamList, singleValParamList);
+            obj = obj.percolateUp(leafIDs, collectedParamList, collectedParamList);
+            rootData = obj.get(1);
+            rootData.byEpochParamList = byEpochParamList;
+            rootData.singleValParamList = singleValParamList;
+            rootData.collectedParamList = collectedParamList;
+            rootData.stimParameterList = {'pulseAmplitude'};
+            obj = obj.set(1, rootData);
+            %% DT-end
         end
         
     end
