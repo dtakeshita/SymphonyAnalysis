@@ -69,7 +69,17 @@ classdef CellData < handle
                     curEpoch.attributes('epochStartTime') = epochTimes_sorted(i);
                     curEpoch.attributes('epochNum') = i;
                     curEpoch.addDataLinks(EpochDataGroups(groupInd).Groups(2).Groups);
-                    %% DT-add background 
+                    %% DT- some addtion of parameters
+                    attr_additional = mapAttributes(EpochDataGroups(groupInd), fname);
+                    utc_offset = attr_additional('startTimeUTCOffsetHours');
+                    attr_additional = mapAttributes(EpochDataGroups(groupInd).Groups(2).Groups(1), fname);%/epoch-petri-das../responses/Amplifier_Ch1/
+                    input_utc0 = attr_additional('inputTimeUTC');
+                    input_utc0 = input_utc0(1:end-7);
+                    [yr,mth,d] = datevec(input_utc0,'dd.mm.yyyy');
+                    [~,~,~,hr,min,sec] = datevec(input_utc0);
+                    hr = utc_offset+hr;%Add offset
+                    curEpoch.attributes('inputTime') = datestr([yr,mth,d,hr,min,sec],'HH:MM:SS'); 
+                    %% add background 
                     if strcmp(curEpoch.attributes('displayName'),'LED Factor Pulse')...
                             && ~any(strcmp(keys(curEpoch.attributes),'LEDbackground'))
                         background = sprintf('%s/%s', EpochDataGroups(groupInd).Name, 'background');
@@ -77,11 +87,15 @@ classdef CellData < handle
                         background = background.measurement.quantity(2:4);
                         curEpoch.attributes('LEDbackground') = background';
                     end
-                    %% End of add background
+                    %% DT-End of addition of parameters
                     obj.epochs(i) = curEpoch;
                 end
-                %% DT--For older symphony data, add voltage for LEDFactorPulse
+                %% DT-add voltages and conver to photoisomearization rate
+                %For older symphony data, add voltage for LEDFactorPulse
                 addLEDVoltages( obj.epochs );
+                [~, file_name] = fileparts(fname);
+                %add NDFs and convert to photoisomerization rate
+                addRstarMean( obj.epochs, file_name );
                 %% End of add Voltages
             end
         end
