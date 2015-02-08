@@ -615,7 +615,16 @@ classdef TreeBrowserGUI < handle
                         yvals = yField.mean_c;
                     end
                     errs = yField.SEM;
+                    %% DT-this is not the best fix...
+                    if length(yvals) < length(xvals)
+                        xvals = xvals(2:end);
+                    end
+                    %% DT-End
+                    try
                     errorbar(xvals, yvals, errs);
+                    catch
+                        2;
+                    end
                     xlabel(xName);
                     ylabel([yName ' (' yField(1).units ')' ]);
                     obj.printCodeForPlotterFunction_byEpoch(xName,yName);
