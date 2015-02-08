@@ -11,7 +11,11 @@ maxLen = max(keyLen);
 disp(sprintf('\n'));
 for i=1:L    
     whiteSpace = 5 + maxLen - keyLen(i);    
-    val = M(allKeys{i});    
-    disp([allKeys{i} ':' repmat(' ', 1, whiteSpace) num2str(val)]);
+    val = M(allKeys{i});
+    if ~iscell(val)
+        disp([allKeys{i} ':' repmat(' ', 1, whiteSpace) num2str(val)]);
+    else
+        disp([allKeys{i} ':' repmat(' ', 1, whiteSpace) sprintf('''%s'' ',val{:})]);
+    end
 end
 disp(sprintf('\n'));
