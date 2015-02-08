@@ -296,8 +296,12 @@ classdef CellData < handle
             ax = gca;
             hold(ax, 'on');
             for i=1:L
+                try
                 h(i) = scatter(ax, timeAxis_spikes(spikeTimes{i}), i .* ones(1,length(spikeTimes{i})));
                 set(h(i), 'Marker', '*', 'MarkerEdgeColor', 'k');
+                catch
+                    2;
+                end
             end
             set(ax, 'Ytick', 1:1:L);
             set(ax, 'Xlim', [timeAxis_spikes(1), timeAxis_spikes(end)]);
