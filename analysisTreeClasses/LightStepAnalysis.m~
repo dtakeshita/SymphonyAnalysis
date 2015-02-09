@@ -20,7 +20,8 @@ classdef LightStepAnalysis < AnalysisTree
             dataSet = cellData.savedDataSets(dataSetName);
             obj = obj.copyAnalysisParams(params);
             obj = obj.copyParamsFromSampleEpoch(cellData, dataSet, ...
-                {'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY'});%This shouldn't have a parameter for building cell tree below.
+                {'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY'});
+                %{'RstarMean', 'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY','pulseAmplitude'});
             obj = obj.buildCellTree(1, cellData, dataSet, {'RstarMean'});
             %obj = obj.buildCellTree(1, cellData, dataSet, {'pulseAmplitude'});
         end
