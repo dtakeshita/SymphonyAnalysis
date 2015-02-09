@@ -194,10 +194,17 @@ classdef TreeBrowserGUI < handle
             col1W = round(tableWidth*.5);
             col2W = round(tableWidth*.5);
             set(obj.handles.epochTagsTable,'ColumnWidth',{col1W, col2W});
+%<<<<<<< HEAD
             
             set(L_epochTagsPanel, 'Sizes', [15, -1]);
             set(L_twoTables, 'Sizes', [-2, -1]);
             
+%=======
+            
+            set(L_epochTagsPanel, 'Sizes', [15, -1]);
+            set(L_twoTables, 'Sizes', [-2, -1]);
+            
+%>>>>>>> FETCH_HEAD
             %plotter area
             L_plot = uiextras.VBox('Parent', L_right);
             

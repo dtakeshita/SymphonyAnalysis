@@ -20,7 +20,8 @@ classdef LightStepAnalysis < AnalysisTree
             dataSet = cellData.savedDataSets(dataSetName);
             obj = obj.copyAnalysisParams(params);
             obj = obj.copyParamsFromSampleEpoch(cellData, dataSet, ...
-                {'RstarMean', 'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY'});
+                {'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY'});
+                %{'RstarMean', 'RstarIntensity', params.ampModeParam, 'spotSize', 'offsetX', 'offsetY','pulseAmplitude'});
             %obj = obj.buildCellTree(1, cellData, dataSet, {'RstarMean'});
             obj = obj.buildCellTree(1, cellData, dataSet, {'pulseAmplitude'});
         end
@@ -47,8 +48,7 @@ classdef LightStepAnalysis < AnalysisTree
                 obj = obj.set(leafIDs(i), curNode);
             end
             %% DT - copied from SpotsMultiSizeAnalysis
-            obj = obj.percolateUp(leafIDs, ...
-                'splitValue', 'pulseAmplitude');
+            obj = obj.percolateUp(leafIDs, 'splitValue', 'pulseAmplitude');
             [byEpochParamList, singleValParamList, collectedParamList] = getParameterListsByType(curNode);
             %fnames = fnames{1};
             obj = obj.percolateUp(leafIDs, byEpochParamList, byEpochParamList);
