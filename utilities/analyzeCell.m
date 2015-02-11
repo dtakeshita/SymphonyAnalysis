@@ -27,7 +27,7 @@ if ~isempty(cellData.prefsMapName)
     prefsMap = loadPrefsMap(cellData.prefsMapName);
 end
 
-dataSetKeys = cellData.savedDataSets.keys;
+dataSetKeys = cellData.savedDataSets.keys;%DT: e.g. LigthStep_20
 cellAnalysisTree = AnalysisTree;
 nodeData.name = ['Full cell analysis tree: ' cellName];
 nodeData.device = params.deviceName;
