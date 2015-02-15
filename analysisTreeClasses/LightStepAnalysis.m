@@ -33,8 +33,10 @@ classdef LightStepAnalysis < AnalysisTree
             for i=1:L %for each leaf node
                 curNode = obj.get(leafIDs(i));
                 if strcmp(rootData.(rootData.ampModeParam), 'Cell attached')
-                    outputStruct = getEpochResponses_CA(cellData, curNode.epochID, ...
+                    outputStruct = getEpochResponses_CA_PAL(cellData, curNode.epochID, ...
                         'DeviceName', rootData.deviceName,'StartTime', obj.StartTime, 'EndTime', obj.EndTime);
+%                     outputStruct = getEpochResponses_CA(cellData, curNode.epochID, ...
+%                         'DeviceName', rootData.deviceName,'StartTime', obj.StartTime, 'EndTime', obj.EndTime);
                     outputStruct = getEpochResponseStats(outputStruct);
                     curNode = mergeIntoNode(curNode, outputStruct);
                 else %whole cell
@@ -128,9 +130,7 @@ classdef LightStepAnalysis < AnalysisTree
                 plot([firingEnd firingEnd], [upperLim lowerLim], 'LineStyle','--','Color',[1 0 0]);
                 plot([burstBound burstBound], [upperLim lowerLim], 'LineStyle','--');
                 hold off
-            end
-            
-            
+            end  
         end
         
         
