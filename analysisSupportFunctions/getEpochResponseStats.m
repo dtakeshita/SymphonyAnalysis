@@ -4,6 +4,7 @@ outlierThres = 4; %SDs
 fnames = fieldnames(outputStruct);
 for i=1:length(fnames)
     curField = fnames{i};
+    try
     if strcmp(outputStruct.(curField).type, 'byEpoch');
         N = sum(~isnan(outputStruct.(curField).value));
         outputStruct.(curField).N = N;
@@ -47,5 +48,8 @@ for i=1:length(fnames)
             outputStruct.(curField).min_c = min(newVals);
             outputStruct.(curField).max_c = max(newVals);
         end
+    end
+    catch
+        2;
     end
 end
