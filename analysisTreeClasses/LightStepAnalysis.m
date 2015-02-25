@@ -105,7 +105,7 @@ classdef LightStepAnalysis < AnalysisTree
             
             ONendTime = cellData.epochs(nodeData.epochID(epochIndex)).get('stimTime')*1E-3; %s
             ONstartTime = 0;
-            if isfield(nodeData, 'ONSETlatency')
+            if isfield(nodeData, 'ONSETlatency') && exist('data','var')
                 %draw lines here
                 hold on
                 firingStart = node.get(1).ONSETlatency.value(epochIndex)+ONstartTime;
@@ -118,7 +118,7 @@ classdef LightStepAnalysis < AnalysisTree
                 plot([burstBound burstBound], [upperLim lowerLim], 'LineStyle','--');
                 hold off
             end;
-            if isfield(nodeData, 'OFFSETlatency')
+            if isfield(nodeData, 'OFFSETlatency') && exist('data','var')
                 %draw lines here
                 hold on
                 firingStart = node.get(1).OFFSETlatency.value(epochIndex)+ONendTime;

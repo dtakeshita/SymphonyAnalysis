@@ -246,7 +246,7 @@ classdef CellData < handle
             end
         end
         
-        function [spCount, xvals,varargout] = getPSTH(obj, epochInd, binWidth, streamName, varargin)
+        function [spCount, xvals,spCount_smth] = getPSTH(obj, epochInd, binWidth, streamName, varargin)
             if nargin < 5
                 smoothingWindow = 0;%in sec
             else
@@ -292,10 +292,7 @@ classdef CellData < handle
                 %spCount_smth = filter(w./sum(w),1,spCount,[],2);
             end
             %convert to Hz
-            spCount = spCount / L / (binWidth*1E-3);
-            if nargout >=3
-                varargout{1} = spCount_smth;
-            end
+            spCount = spCount / L / (binWidth*1E-3);    
         end
         
         function plotSpikeRaster(obj, epochInd, streamName)
