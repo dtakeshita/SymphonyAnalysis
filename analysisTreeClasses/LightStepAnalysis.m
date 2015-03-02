@@ -86,7 +86,7 @@ classdef LightStepAnalysis < AnalysisTree
             %title(['ON latency: ',num2str(node.get(2).meanONlatency),' ste: ',num2str(node.get(2).steONlatency)]);
         end
         
-        function plotEpochData(node, cellData, device, epochIndex)
+        function LH = plotEpochData(node, cellData, device, epochIndex)
             nodeData = node.get(1);
             cellData.epochs(nodeData.epochID(epochIndex)).plotData(device);
             title(['Epoch # ' num2str(nodeData.epochID(epochIndex)) ': ' num2str(epochIndex) ' of ' num2str(length(nodeData.epochID))]);
@@ -130,7 +130,8 @@ classdef LightStepAnalysis < AnalysisTree
                 plot([firingEnd firingEnd], [upperLim lowerLim], 'LineStyle','--','Color',[1 0 0]);
                 plot([burstBound burstBound], [upperLim lowerLim], 'LineStyle','--');
                 hold off
-            end  
+            end
+            LH = findobj(gca,'type','line');
         end
         
         

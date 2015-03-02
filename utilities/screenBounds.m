@@ -30,5 +30,8 @@ function b = screenBounds(screenNum)
         end
         
         b = b(screenNum, :);
+    else %DT
+        screenNum = primary;
+        b = b(screenNum,:);
     end
 end
