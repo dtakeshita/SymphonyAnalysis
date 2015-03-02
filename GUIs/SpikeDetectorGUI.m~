@@ -72,11 +72,11 @@ classdef SpikeDetectorGUI < handle
             obj.handles.applyToTheRestButton = uicontrol('Parent', L_info, ...
                 'Style', 'pushbutton', ...
                 'String', 'Apply to later epochs', ...
-                'Callback', @(uiobj, evt)obj.updateLaterSpikeTimes());
+                'Callback', @(uiobj, evt)obj.updateAllSpikeTimes());
             obj.handles.applyToAllButton = uicontrol('Parent', L_info, ...
                 'Style', 'pushbutton', ...
                 'String', 'Apply to all epochs', ...
-                'Callback', @(uiobj, evt)obj.updateAllSpikeTimes());
+                'Callback', @(uiobj, evt)obj.updateLaterSpikeTimes());
             set(L_info, 'Sizes', [-1, -1, -1, -1, -1, -1, -1]);
             obj.handles.ax = axes('Parent', L_main, ...
                 'ButtonDownFcn', @axisZoomCallback);
@@ -132,8 +132,7 @@ classdef SpikeDetectorGUI < handle
         end
         
         function updateLaterSpikeTimes(obj)
-            epochInd_st = obj.curEpochInd;
-            updateAllSpikeTimes(obj, epochInd_st);
+            epochInd_st = obj.currentEpo
         end
         
         function updateAllSpikeTimes(obj,varargin)

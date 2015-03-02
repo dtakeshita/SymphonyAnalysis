@@ -24,10 +24,11 @@ for i=1:Ntraces
     trace(1:20) = D(i,1:20) - mean(D(i,1:20));
 %     plot(trace);
 %     pause;
+   signal_flip = false;
    if abs(max(trace)) > abs(min(trace)) %flip it over
        trace = -trace;
+       signal_flip = true;
    end
-
 
     trace_noise = D_noSpikes(i,:);
     noise_std = std(trace_noise);
@@ -38,7 +39,7 @@ for i=1:Ntraces
     peaks = trace(peak_times);    
     
     %add a check for rebounds on the other side
-    r = getRebounds(peak_times,trace,searchInterval_points);
+    r = getRebounds(peak_times,trace,searchInterval_points, signal_flip);
     peaks = abs(peaks);
     peakAmps = peaks+r;
 

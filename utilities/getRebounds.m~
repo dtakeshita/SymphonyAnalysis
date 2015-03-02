@@ -23,19 +23,12 @@ for i=1:length(peaks)
    %DT-If signal is flipped, look for positive peak backward, rather than
    %forward (assuming negative peak appears first in a spike)
    if flipped
-       startPoint = max(peaks_ind(i)-searchInterval,1);
-       nextMax = getPeaks(trace(startPoint:peaks_ind(i)),1);
+       
    else
         nextMax = getPeaks(trace(peaks_ind(i):endPoint),1);
    end
    if isempty(nextMax), nextMax = 0; 
-   else
-       if flipped
-           nextMax = nextMax(end);
-       else
-           nextMax = nextMax(1);
-       end
-   end
+   else nextMax = nextMax(1); end
    
       %DT-take the time window for max both forward and backward in
       %time-but, this also causes a problem...
