@@ -46,7 +46,8 @@ classdef SpikeDetectorGUI < handle
                 'Menubar',      'none', ...
                 'Position', [0 0.4*bounds(4), 0.75*bounds(3), 0.25*bounds(4)], ...
                 'KeyPressFcn',@(uiobj,evt)obj.keyHandler(evt));
-            set(obj.fig,'toolbar','figure');
+            %set(obj.fig,'toolbar','figure');
+            addZoomButtons(obj.fig);
             L_main = uiextras.VBox('Parent', obj.fig);
             L_info = uiextras.HBox('Parent', L_main, ...
                 'Spacing', 10);
