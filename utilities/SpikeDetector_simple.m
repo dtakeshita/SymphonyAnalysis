@@ -1,4 +1,9 @@
-function results = SpikeDetector_simple(D, SampleInterval, thres_std)
+function results = SpikeDetector_simple(D, SampleInterval, thres_std, varargin)
+if nargin > 3
+    ubd = varargin{1};
+else
+    ubd = Inf;
+end
 HighPassCut_drift = 70; %Hz, in order to remove drift and 60Hz noise
 HighPassCut_spikes = 500; %Hz, in order to remove everything but spikes
 ref_period = 2E-3; %s
@@ -44,7 +49,7 @@ for i=1:Ntraces
     peakAmps = peaks+r;
 
     if ~isempty(peaks) && max(D(i,:)) > min(D(i,:)) %make sure we don't have bad/empty trace
-        spike_ind = find(peakAmps>thres_std*noise_std);
+        spike_ind = find(peakAmps>thres_std*noise_std & peakAmps < ubd);
                                
         if isempty(spike_ind)
             disp(['Epoch ' num2str(i) ': no spikes']);

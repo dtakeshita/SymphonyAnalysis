@@ -1,5 +1,10 @@
-function Ind = getThresCross(V,th,dir)
+function Ind = getThresCross(V,th,dir, varargin)
 %dir 1 = up, -1 = down
+if nargin > 3
+    ubd = varargin{1};
+else
+    ubd = Inf;
+end
 
 Vorig = V(1:end-1);
 Vshift = V(2:end);

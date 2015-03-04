@@ -4,10 +4,12 @@ classdef SpikeDetectorGUI < handle
         handles
         mode
         threshold
+        upperBound
         spikeTimes
         data
         cellData
         epochInd
+        jumpToEpochInd
         curEpochInd
         sampleRate
         streamName
@@ -25,7 +27,9 @@ classdef SpikeDetectorGUI < handle
             obj.epochInd = epochInd;
             obj.mode = params.spikeDetectorMode;
             obj.threshold = params.spikeThreshold;
+            obj.upperBound = params.spikeUpperBound;
             obj.curEpochInd = 1;
+            obj.jumpToEpochInd = length(cellData.epochs);
             
             obj.buildUI();
             obj.loadData();
@@ -42,7 +46,7 @@ classdef SpikeDetectorGUI < handle
                 'Menubar',      'none', ...
                 'Position', [0 0.4*bounds(4), 0.75*bounds(3), 0.25*bounds(4)], ...
                 'KeyPressFcn',@(uiobj,evt)obj.keyHandler(evt));
-            
+            set(obj.fig,'toolbar','figure');
             L_main = uiextras.VBox('Parent', obj.fig);
             L_info = uiextras.HBox('Parent', L_main, ...
                 'Spacing', 10);
@@ -51,8 +55,8 @@ classdef SpikeDetectorGUI < handle
                 'String', 'Spike detector mode');
             obj.handles.detectorModeMenu = uicontrol('Parent', L_info, ...
                 'Style', 'popupmenu', ...
-                'String', {'Standard deviations above noise', 'Simple threshold', 'clustering'}, ...
-                'Callback', @(uiobj, evt)obj.updateSpikeTimes());
+                'String', {'Standard deviations above noise', 'Simple threshold'}, ...
+                'Callback', @(uiobj, evt)obj.updateSpikeTimes());%clustering option may be added later
             if strcmp(obj.mode, 'Stdev')
                 set(obj.handles.detectorModeMenu, 'value', 1);
             else
@@ -65,6 +69,20 @@ classdef SpikeDetectorGUI < handle
                 'Style', 'edit', ...
                 'String', num2str(obj.threshold), ...
                 'Callback', @(uiobj, evt)obj.updateSpikeTimes());
+            upperBoundText = uicontrol('Parent', L_info, ...
+                'Style', 'text', ...
+                'String', 'Upper bound: ');
+            obj.handles.upperBoundEdit = uicontrol('Parent', L_info, ...
+                'Style', 'edit', ...
+                'String', num2str(obj.upperBound), ...
+                'Callback', @(uiobj, evt)obj.updateSpikeTimes());
+            jumpToEpochText =  uicontrol('Parent', L_info, ...
+                'Style', 'text', ...
+                'String', 'Jump to: ');
+            obj.handles.jumpToEpochEdit = uicontrol('Parent', L_info, ...
+                'Style', 'edit', ...
+                'String', num2str(obj.jumpToEpochInd), ...
+                'Callback', @(uiobj, evt)obj.jumpTo());
             obj.handles.reDetectButton = uicontrol('Parent', L_info, ...
                 'Style', 'pushbutton', ...
                 'String', 'Re-detect spikes', ...
@@ -77,7 +95,7 @@ classdef SpikeDetectorGUI < handle
                 'Style', 'pushbutton', ...
                 'String', 'Apply to all epochs', ...
                 'Callback', @(uiobj, evt)obj.updateAllSpikeTimes());
-            set(L_info, 'Sizes', [-1, -1, -1, -1, -1, -1, -1]);
+            set(L_info, 'Sizes', [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1]);
             obj.handles.ax = axes('Parent', L_main, ...
                 'ButtonDownFcn', @axisZoomCallback);
             set(L_main, 'Sizes', [40, -1]);
@@ -102,11 +120,12 @@ classdef SpikeDetectorGUI < handle
                 s = get(obj.handles.detectorModeMenu, 'String');
                 obj.mode = s{ind};
                 obj.threshold = str2double(get(obj.handles.thresholdEdit, 'String'));
+                obj.upperBound = str2double(get(obj.handles.upperBoundEdit, 'String'));
                 
                 if strcmp(obj.mode, 'Simple threshold')
-                    obj.spikeTimes = getThresCross(obj.data,obj.threshold,sign(obj.threshold));
+                    obj.spikeTimes = getThresCross(obj.data,obj.threshold,sign(obj.threshold),obj.upperBound);
                 elseif strcmp(obj.mode, 'Standard deviations above noise')
-                    spikeResults = SpikeDetector_simple(obj.data, 1./obj.sampleRate, obj.threshold);
+                    spikeResults = SpikeDetector_simple(obj.data, 1./obj.sampleRate, obj.threshold,obj.upperBound);
                     obj.spikeTimes = spikeResults.sp;
                 elseif strcmp(obj.mode,'clustering')
                     %% implement clustreing??-Probably need to go through all the epochs
@@ -245,6 +264,16 @@ classdef SpikeDetectorGUI < handle
             end
         end
         
+        function jumpTo(obj)
+            obj.jumpToEpochInd = str2double(get(obj.handles.jumpToEpochEdit, 'String'));
+            if obj.jumpToEpochInd < 1
+                obj.jumpToEpochInd =1;
+            elseif obj.jumpToEpochInd > length(obj.cellData.epochs)
+                obj.jumpToEpochInd = length(obj.cellData.epochs);
+            end
+            obj.curEpochInd = obj.jumpToEpochInd;
+            obj.loadData();
+        end
         function doClustering(obj)
             set(obj.fig, 'Name', 'Busy...');
             drawnow; 

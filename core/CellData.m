@@ -384,6 +384,9 @@ classdef CellData < handle
             L = length(epochInd);
             params.spikeDetectorMode = mode;
             params.spikeThreshold = threshold;
+            %DT to remove artifact with larger amplitude, set an upper
+            %bound
+            params.spikeUpperBound = 1000;
             if interactive
                 SpikeDetectorGUI(obj, epochInd, params, streamName);
             else
