@@ -148,7 +148,8 @@ classdef SpikeDetectorGUI < handle
                 obj.spikeTimes = obj.spikeTimes([(ISItest > 0.0015) true]);
             end
             saveAndSyncCellData(obj.cellData) %save cellData file
-            obj.updateUI();
+            zoomed = true;%keep zoomed
+            obj.updateUI(zoomed);
         end
         
         function updateLaterSpikeTimes(obj)
@@ -241,12 +242,24 @@ classdef SpikeDetectorGUI < handle
             obj.updateUI();
         end
         
-        function updateUI(obj)
+        function updateUI(obj, varargin)
+            if nargin >=2
+                zoomed = varargin{1};
+            else
+                zoomed = false;
+            end
+            if zoomed %previously zoomed, then keep it.
+                x_lim = get(obj.handles.ax,'xlim');
+                y_lim = get(obj.handles.ax,'ylim');
+            end
             plot(obj.handles.ax, 1:length(obj.data), obj.data, 'k');
             hold(obj.handles.ax, 'on');
             plot(obj.handles.ax, obj.spikeTimes, obj.data(obj.spikeTimes), 'rx');
             hold(obj.handles.ax, 'off');
-            
+            if zoomed
+                zoom(gca,'reset');
+                set(obj.handles.ax,'xlim',x_lim, 'ylim', y_lim);
+            end
             set(obj.fig, 'Name',['Spike Detector: Epoch ' num2str(obj.epochInd(obj.curEpochInd)) ': ' num2str(length(obj.spikeTimes)) ' spikes']);
         end
         
