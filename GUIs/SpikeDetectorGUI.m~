@@ -111,10 +111,10 @@ classdef SpikeDetectorGUI < handle
             paramName = 'excluded';
             cur_epoch = obj.cellData.epochs(obj.epochInd(obj.curEpochInd));
            if cur_epoch.get(paramName)==true
-               cur_epoch.attributes(paramName) = false;
+               curEpoch.attributes(paramName) = false;
                set(obj.handles.excludeButton,'String','EXCLUDE this epoch');
            else
-               cur_epoch.attributes(paramName) = true;
+               curEpoch.attributes(paramName) = true;
                set(obj.handles.excludeButton,'String','INCLUDE this epoch');
            end
            saveAndSyncCellData(obj.cellData);
